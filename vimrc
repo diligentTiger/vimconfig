@@ -21,13 +21,15 @@ Plugin 'L9'
 " Git plugin not hosted on GitHub
 Plugin 'git://git.wincent.com/command-t.git'
 Plugin 'scrooloose/nerdtree'
+Plugin 'Xuyuanp/nerdtree-git-plugin'
 Plugin 'jistr/vim-nerdtree-tabs'
 " autocomplete using Tab
 Plugin 'ervandew/supertab'
 " autocomplete as typing
 Plugin 'Valloric/YouCompleteMe'
 Plugin 'vim-airline/vim-airline'
-
+Plugin 'scrooloose/syntastic'
+Plugin 'nvie/vim-flake8'
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
 filetype plugin indent on    " required
@@ -45,12 +47,13 @@ filetype plugin indent on    " required
 
 
 """""""""""""""""""""""""Config Plugin""""""""""""""""""""""""""""
+"""" airline
 "airline list buffer when there is only one tab open
 let g:airline#extensions#tabline#enabled = 1
 " Show just the filename
 let g:airline#extensions#tabline#fnamemod = ':t'
 
-" ctrlP
+"""" ctrlP
 " Setup some default ignores for ctrlp
 let g:ctrlp_custom_ignore = {
   \ 'dir':  '\v[\/](\.(git|hg|svn)|\_site)$',
@@ -61,6 +64,30 @@ let g:ctrlp_custom_ignore = {
 " control. It also supports works with .svn, .hg, .bzr.
 let g:ctrlp_working_path_mode = 'r'
 
+"""" YouCompleteMe
+let g:ycm_autoclose_preview_window_after_completion=1
+"python defines a shortcut for goto definition
+map <leader>g  :YcmCompleter GoToDefinitionElseDeclaration<CR> 
+
+"""" syntastic
+let python_highlight_all=1
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+let g:syntastic_cpp_compiler = 'clang++'
+let g:syntastic_cpp_compiler_options = ' -std=c++11 -stdlib=libc++'
+" Checkers for filetype cpp possibly disabled by YouCompleteMe
+let g:ycm_show_diagnostics_ui = 0
+
+"""" nerdtree
+" ignore certain file types
+let NERDTreeIgnore=['\.o$', '\.exe$', '\~$']
+" highlight opened file in nerdtree by :NERDTreeToggle
+map <leader>r :NERDTreeFind<cr>
 
 
 """""""""""""""""""""""""Basic""""""""""""""""""""""""""""
@@ -77,6 +104,9 @@ set textwidth=120
 set nocompatible
 set sm
 set foldmethod=marker
+"for python
+"set foldmethod=indent
+"set foldlevel=99
 set foldenable																		" enable folding
 "highlight Folded
 set tabpagemax=15
@@ -96,6 +126,21 @@ set noexpandtab																		"turns tab into spaces
 "set colorcolumn=110
 "highlight ColorColumn ctermbg=darkgray
 
+
+"""""""""""""""""""""""""Python""""""""""""""""""""""""""""
+au BufNewFile,BufRead *.py
+    \ set tabstop=4
+    \ set softtabstop=4
+    \ set shiftwidth=4
+    \ set textwidth=120
+    \ set expandtab
+    \ set autoindent
+    \ set fileformat=unix
+
+"avoid extraneous whitespace, have VIM flag that for us so that it’s easy to spot
+au BufRead,BufNewFile *.py,*.pyw,*.c,*.h match BadWhitespace /\s\+$/
+
+set encoding=utf-8
 
 """""""""""""""""""""""""Search""""""""""""""""""""""""""""
 set hls
