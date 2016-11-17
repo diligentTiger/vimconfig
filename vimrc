@@ -68,6 +68,7 @@ let g:ctrlp_working_path_mode = 'r'
 let g:ycm_autoclose_preview_window_after_completion=1
 "python defines a shortcut for goto definition
 map <leader>g  :YcmCompleter GoToDefinitionElseDeclaration<CR> 
+let g:ycm_global_ycm_extra_conf = '~/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
 
 """" syntastic
 let python_highlight_all=1
@@ -103,7 +104,7 @@ set wrap
 set textwidth=120
 set nocompatible
 set sm
-set foldmethod=marker
+"set foldmethod=marker
 "for python
 "set foldmethod=indent
 "set foldlevel=99
@@ -129,15 +130,19 @@ set noexpandtab																		"turns tab into spaces
 
 """""""""""""""""""""""""Python""""""""""""""""""""""""""""
 au BufNewFile,BufRead *.py
-    \ set tabstop=4
-    \ set softtabstop=4
-    \ set shiftwidth=4
-    \ set textwidth=120
-    \ set expandtab
-    \ set autoindent
+    \ set tabstop=4 |
+    \ set softtabstop=4 |
+    \ set shiftwidth=4 |
+    \ set textwidth=120 |
+    \ set expandtab | 
+    \ set autoindent |
     \ set fileformat=unix
 
-"avoid extraneous whitespace, have VIM flag that for us so that it’s easy to spot
+" Use the below highlight group when displaying bad whitespace is desired.
+highlight BadWhitespace ctermbg=red guibg=red
+" Display tabs at the beginning of a line in Python mode as bad.
+au BufRead,BufNewFile *.py,*.pyw match BadWhitespace /^\t\+/
+" Make trailing whitespace be flagged as bad.
 au BufRead,BufNewFile *.py,*.pyw,*.c,*.h match BadWhitespace /\s\+$/
 
 set encoding=utf-8
